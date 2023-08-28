@@ -954,6 +954,7 @@ def main():
     parser.add_argument('--config', default='/etc/throttled.conf', help='override default config file path')
     parser.add_argument('--force', action='store_true', help='bypass compatibility checks (EXPERTS only)')
     parser.add_argument('--log', metavar='/path/to/file', help='log to file instead of stdout')
+    parser.add_argument('--disable-bdprochot', action='store_true', help='disable BD-PROCHOT (one-off)')
     args = parser.parse_args()
 
     if args.log:
@@ -968,8 +969,11 @@ def main():
         cpuid = check_cpu()
 
     set_msr_allow_writes()
-
     test_msr_rw_capabilities()
+
+    if args.disable_bdprochot:
+        set_disable_bdprochot()
+        return
 
     log('[I] Loading config file.')
     config = load_config()
